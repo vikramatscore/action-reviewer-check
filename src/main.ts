@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {wait} from './wait'
+import fs from 'fs'
 
 async function run(): Promise<void> {
   try {
@@ -8,6 +9,13 @@ async function run(): Promise<void> {
 
     if (!token) {
       core.setFailed('❌ Missing Github token')
+      return
+    }
+
+    const reviewersJsonFilePath = core.getInput('reviewers_json_file_path')
+
+    if (!reviewersJsonFilePath) {
+      core.setFailed('❌ Missing reviewers JSON')
       return
     }
 
@@ -32,11 +40,14 @@ async function run(): Promise<void> {
       })
       console.log("reviews: " + reviews.data.length)
 
-      // TODO move to secrets?
-      const reviewTeam = ["akashamin", "bagarwal18", "dariushm2", "jthescore", "kamila-score"]
+      const reviewersJson = JSON.parse(fs.readFileSync(reviewersJsonFilePath, 'utf-8')) as string[]
+      console.log("Reviewers JSON: " + JSON.stringify(reviewersJson))
+
       const match = reviews.data.find((review) => {
-        return review.state === "APPROVED" && reviewTeam.includes(`${review.user?.login}`) 
+        return review.state === "APPROVED" && reviewersJson.includes(`${review.user?.login}`) 
       })
+      console.log("Match found: " + JSON.stringify(match))
+
       if (!match) {
         core.setFailed("Mandatory review check failed")
       }

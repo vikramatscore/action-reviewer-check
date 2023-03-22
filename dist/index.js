@@ -34,15 +34,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const fs_1 = __importDefault(__nccwpck_require__(5747));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
             if (!token) {
                 core.setFailed('❌ Missing Github token');
+                return;
+            }
+            const reviewersJsonFilePath = core.getInput('reviewers_json_file_path');
+            if (!reviewersJsonFilePath) {
+                core.setFailed('❌ Missing reviewers JSON');
                 return;
             }
             const pullRequest = github.context.payload.pull_request;
@@ -56,11 +65,13 @@ function run() {
                 };
                 const reviews = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews', Object.assign(Object.assign({}, defaultParameter), { pull_number: pullRequest.number }));
                 console.log("reviews: " + reviews.data.length);
-                const reviewTeam = ["akashamin", "bagarwal18", "dariushm2", "jthescore", "kamila-score"];
+                const reviewersJson = JSON.parse(fs_1.default.readFileSync(reviewersJsonFilePath, 'utf-8'));
+                console.log("Reviewers JSON: " + JSON.stringify(reviewersJson));
                 const match = reviews.data.find((review) => {
                     var _a;
-                    return review.state === "APPROVED" && reviewTeam.includes(`${(_a = review.user) === null || _a === void 0 ? void 0 : _a.login}`);
+                    return review.state === "APPROVED" && reviewersJson.includes(`${(_a = review.user) === null || _a === void 0 ? void 0 : _a.login}`);
                 });
+                console.log("Match found: " + JSON.stringify(match));
                 if (!match) {
                     core.setFailed("Mandatory review check failed");
                 }
