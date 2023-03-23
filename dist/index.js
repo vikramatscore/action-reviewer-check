@@ -65,7 +65,8 @@ function run() {
                     owner: repoOwner
                 };
                 const reviews = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews', Object.assign(Object.assign({}, defaultParameter), { pull_number: pullRequest.number }));
-                console.log("reviews: " + reviews.data.length);
+                console.log("number of reviews: " + reviews.data.length);
+                console.log("reviews: " + JSON.stringify(reviews.data));
                 const reviewersJson = JSON.parse(fs_1.default.readFileSync(reviewersJsonFilePath, 'utf-8'));
                 console.log("Reviewers JSON: " + JSON.stringify(reviewersJson));
                 const match = reviews.data.find((review) => {

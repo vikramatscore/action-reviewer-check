@@ -39,7 +39,8 @@ async function run(): Promise<void> {
         ...defaultParameter,
         pull_number: pullRequest.number
       })
-      console.log("reviews: " + reviews.data.length)
+      console.log("number of reviews: " + reviews.data.length)
+      console.log("reviews: " + JSON.stringify(reviews.data))
 
       const reviewersJson = JSON.parse(fs.readFileSync(reviewersJsonFilePath, 'utf-8')) as string[]
       console.log("Reviewers JSON: " + JSON.stringify(reviewersJson))
