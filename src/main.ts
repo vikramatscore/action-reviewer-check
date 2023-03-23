@@ -6,6 +6,8 @@ async function run(): Promise<void> {
   try {
     const token = core.getInput('github_token') || process.env.GITHUB_TOKEN
 
+    console.log("current dir: " + process.cwd())
+
     if (!token) {
       core.setFailed('❌ Missing Github token')
       return

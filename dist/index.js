@@ -45,6 +45,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
+            console.log("current dir: " + process.cwd());
             if (!token) {
                 core.setFailed('❌ Missing Github token');
                 return;
