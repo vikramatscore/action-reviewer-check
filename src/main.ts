@@ -23,7 +23,7 @@ async function run(): Promise<void> {
     const pullRequest = github.context.payload.pull_request
 
     if (pullRequest) {
-      console.log("Found pull request, head sha: " + pullRequest.head.sha)
+      console.log("Found pull request, head sha: " + pullRequest.head.sha + ", merge sha: " + pullRequest.merge_commit_sha)
       const octokit = github.getOctokit(token)
 
       const {
