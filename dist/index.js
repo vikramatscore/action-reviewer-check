@@ -57,7 +57,7 @@ function run() {
             }
             const pullRequest = github.context.payload.pull_request;
             if (pullRequest) {
-                console.log("Found pull request");
+                console.log("Found pull request, head sha: " + pullRequest.head.sha);
                 const octokit = github.getOctokit(token);
                 const { repo: { repo: repoName, owner: repoOwner }, runId: runId } = github.context;
                 const defaultParameter = {
