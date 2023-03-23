@@ -58,6 +58,7 @@ function run() {
             const pullRequest = github.context.payload.pull_request;
             if (pullRequest) {
                 console.log("Found pull request, head sha: " + pullRequest.head.sha + ", merge sha: " + pullRequest.merge_commit_sha);
+                const headSha = pullRequest.head.sha;
                 const octokit = github.getOctokit(token);
                 const { repo: { repo: repoName, owner: repoOwner }, runId: runId } = github.context;
                 const defaultParameter = {
@@ -71,7 +72,7 @@ function run() {
                 console.log("Reviewers JSON: " + JSON.stringify(reviewersJson));
                 const match = reviews.data.find((review) => {
                     var _a;
-                    return review.state === "APPROVED" && reviewersJson.includes(`${(_a = review.user) === null || _a === void 0 ? void 0 : _a.login}`);
+                    return review.state === "APPROVED" && review.commit_id === headSha && reviewersJson.includes(`${(_a = review.user) === null || _a === void 0 ? void 0 : _a.login}`);
                 });
                 console.log("Match found: " + JSON.stringify(match));
                 if (!match) {

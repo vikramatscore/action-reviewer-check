@@ -24,6 +24,7 @@ async function run(): Promise<void> {
 
     if (pullRequest) {
       console.log("Found pull request, head sha: " + pullRequest.head.sha + ", merge sha: " + pullRequest.merge_commit_sha)
+      const headSha = pullRequest.head.sha
       const octokit = github.getOctokit(token)
 
       const {
@@ -46,7 +47,7 @@ async function run(): Promise<void> {
       console.log("Reviewers JSON: " + JSON.stringify(reviewersJson))
 
       const match = reviews.data.find((review) => {
-        return review.state === "APPROVED" && reviewersJson.includes(`${review.user?.login}`) 
+        return review.state === "APPROVED" && review.commit_id === headSha && reviewersJson.includes(`${review.user?.login}`) 
       })
       console.log("Match found: " + JSON.stringify(match))
 
