@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Reviewer Check'
+description: 'Checks whether the PR has received an approval from at least one of the mandatory reviewers'
+author: 'theScore'
 inputs:
-  milliseconds: # change this
+  github_token:
+    required: false
+    description: 'Github token'
+  reviewers_json_file_path:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'File containing a JSON array with Github usernames of mandatory reviewers'
 runs:
   using: 'node16'
   main: 'dist/index.js'
